@@ -5,6 +5,8 @@ const Login = () => {
     token: "",
     accesskey: "",
   });
+  const [downloadLink,setDownloadLink]=useState("")
+  const [campaign_name,setCampaign_name]=useState("")
   const headers={
     "Access-Control-Allow-Origin" : "*", 
 "Access-Control-Allow-Credentials" : true 
@@ -12,20 +14,27 @@ const Login = () => {
 const handleChange = (e) => {
   setSuppFileLink({ ...suppFileLink, [e.target.name]: e.target.value });
 };
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-      const data=await fetch(`https://mailer-api.optizmo.net/accesskey/download/${suppFileLink.accesskey}?token=${suppFileLink.token}`, {
-       mode:"no-cors"
+fetch(`https://cors-anywhere.herokuapp.com/https://mailer-api.optizmo.net/accesskey/download/${suppFileLink.accesskey}?token=${suppFileLink.token}`, {
+        method: 'GET',
+        headers:{
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      }).then(res => res.json())
+      .then(response => {
+        if(response.result==="success"){
+          setDownloadLink(response.download_link)
+          setCampaign_name(response.campaign_name)
+        }
       })
-      // let response = await data.json();
-      console.log(await data.json())
-   
+      .catch(error => console.error('Error:', error));
   };
   return (
     <section className='py-5'>
       <div className='row'>
         <div className='col-10 mx-auto col-md-6 my-3'>
+ <h1 className="text-center text-capitalize"> suppression file link</h1>
           <form onSubmit={handleSubmit} className='mt-5'>
             <div className='form-group'>
               <input
@@ -54,12 +63,14 @@ const handleChange = (e) => {
             <div className='form-group mt-3'>
               <button
                 type='submit'
-                className='form-control bg-primary text-white'
+                className='form-control bg-success text-white'
               >
-                Procceed Suppression
+                Procceed Suppression Link
               </button>
             </div>
           </form>
+          <p><strong className="text-primary">campaign name:</strong>  {campaign_name}</p>
+          <p><strong className="text-primary">download link:</strong>  {downloadLink}</p>
         </div>
       </div>
     </section>
