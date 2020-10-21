@@ -5,20 +5,22 @@ const Login = () => {
     token: "",
     accesskey: "",
   });
-  const jokeRequest = axios.create({
-    baseURL: 'https://mailer-api.optizmo.net'
-  })
+  const headers={
+    "Access-Control-Allow-Origin" : "*", 
+"Access-Control-Allow-Credentials" : true 
+  }
 const handleChange = (e) => {
   setSuppFileLink({ ...suppFileLink, [e.target.name]: e.target.value });
 };
   const handleSubmit = async (e) => {
     e.preventDefault();
-   console.log("submited")
-const response=await jokeRequest.get(
-    `/accesskey/download/${suppFileLink.accesskey}`,{params: { token: "4IHwSKhNn5QbQdhe3BhwMK6lD4CE0XW7" }}
-  )
- console.log(response)
 
+      const data=await fetch(`https://mailer-api.optizmo.net/accesskey/download/${suppFileLink.accesskey}?token=${suppFileLink.token}`, {
+       mode:"no-cors"
+      })
+      // let response = await data.json();
+      console.log(await data.json())
+   
   };
   return (
     <section className='py-5'>
