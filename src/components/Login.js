@@ -1,40 +1,39 @@
-import React,{useState} from "react";
-import axios from "axios"
+import React, { useState } from "react";
+import { Link } from "react-router-dom"
 const Login = () => {
   const [suppFileLink, setSuppFileLink] = useState({
     token: "",
     accesskey: "",
   });
-  const [downloadLink,setDownloadLink]=useState("")
-  const [campaign_name,setCampaign_name]=useState("")
-  const headers={
-    "Access-Control-Allow-Origin" : "*", 
-"Access-Control-Allow-Credentials" : true 
-  }
-const handleChange = (e) => {
-  setSuppFileLink({ ...suppFileLink, [e.target.name]: e.target.value });
-};
-  const handleSubmit = (e) => {
+  const [downloadLink, setDownloadLink] = useState("")
+  const [campaign_name, setCampaign_name] = useState("")
+  const [link, setLink] = useState("")
+
+  const handleChange = (e) => {
+    setSuppFileLink({ ...suppFileLink, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-fetch(`https://cors-anywhere.herokuapp.com/https://mailer-api.optizmo.net/accesskey/download/${suppFileLink.accesskey}?token=${suppFileLink.token}`, {
-        method: 'GET',
-        headers:{
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      }).then(res => res.json())
-      .then(response => {
-        if(response.result==="success"){
+    await fetch(`https://rocky-ocean-20124.herokuapp.com/https://mailer-api.optizmo.net/accesskey/download/${suppFileLink.accesskey}?token=${suppFileLink.token}`, {
+      method: 'GET',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    }).then(res => res.json())
+      .then(async response => {
+        if (response.result === "success") {
           setDownloadLink(response.download_link)
           setCampaign_name(response.campaign_name)
         }
       })
       .catch(error => console.error('Error:', error));
+
   };
   return (
     <section className='py-5'>
       <div className='row'>
         <div className='col-10 mx-auto col-md-6 my-3'>
- <h1 className="text-center text-capitalize"> suppression file link</h1>
+          <h1 className="text-center text-capitalize"> suppression file link</h1>
           <form onSubmit={handleSubmit} className='mt-5'>
             <div className='form-group'>
               <input
@@ -70,7 +69,7 @@ fetch(`https://cors-anywhere.herokuapp.com/https://mailer-api.optizmo.net/access
             </div>
           </form>
           <p><strong className="text-primary">campaign name:</strong>  {campaign_name}</p>
-          <p><strong className="text-primary">download link:</strong>  {downloadLink}</p>
+          <p><strong className="text-primary">download link:</strong> {downloadLink}</p>
         </div>
       </div>
     </section>
